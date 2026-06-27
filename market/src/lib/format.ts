@@ -1,6 +1,6 @@
 export function shortAddress(address?: string): string {
   if (!address) return "No wallet";
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return `${address.slice(0, 6)}:${address.slice(-4)}`;
 }
 
 export function compact(value: number | bigint): string {

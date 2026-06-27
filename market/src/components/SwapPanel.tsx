@@ -121,7 +121,7 @@ export function SwapPanel() {
         disabled={!canSwap || busy}
         className="mt-5 w-full rounded-2xl bg-paper px-5 py-4 font-black text-ink transition active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-paper/45"
       >
-        {busy ? "Swapping..." : canSwap ? `Swap ${fromCoin.code} to ${toCoin.code}` : "Swap unavailable"}
+        {busy ? "Processing" : canSwap ? `Swap ${fromCoin.code} to ${toCoin.code}` : "Swap unavailable"}
       </button>
 
       {message && <div className="mt-4 rounded-xl bg-white/5 px-3 py-2 text-sm font-semibold text-paper/70">{message}</div>}

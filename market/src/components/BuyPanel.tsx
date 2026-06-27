@@ -109,7 +109,7 @@ export function BuyPanel({ product }: { product: Product }) {
         disabled={Boolean(disabledReason) || busy}
         className="focus-ring mt-5 w-full rounded-2xl bg-punch px-5 py-4 text-lg font-black text-white transition active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-paper/45"
       >
-        {busy ? "Buying..." : disabledReason || "Buy now"}
+        {busy ? "Processing" : disabledReason || "Buy now"}
       </button>
 
       {!enough && address && (
