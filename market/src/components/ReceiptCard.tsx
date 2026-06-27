@@ -13,6 +13,10 @@ export type Receipt = {
   coinId: number;
   price: number;
   hash: string;
+  status?: string;
+  gasUsed?: string;
+  blockNumber?: number;
+  sync?: boolean;
   demo?: boolean;
 };
 
@@ -39,13 +43,41 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
           {t("demoPreview")}
         </div>
       ) : (
-        <Link
-          href={explorerTx(EXPLORER_URL, receipt.hash)}
-          target="_blank"
-          className="mt-3 block truncate rounded-xl bg-black/25 px-3 py-2 font-mono text-xs text-sky"
-        >
-          {receipt.hash}
-        </Link>
+        <>
+          <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+            {receipt.status && (
+              <div className="rounded-xl bg-white/5 px-3 py-2">
+                <div className="font-black uppercase tracking-widest text-paper/35">Status</div>
+                <div className="mt-1 font-mono text-paper/80">{receipt.status}</div>
+              </div>
+            )}
+            {typeof receipt.blockNumber === "number" && (
+              <div className="rounded-xl bg-white/5 px-3 py-2">
+                <div className="font-black uppercase tracking-widest text-paper/35">Block</div>
+                <div className="mt-1 font-mono text-paper/80">{receipt.blockNumber}</div>
+              </div>
+            )}
+            {receipt.gasUsed && (
+              <div className="rounded-xl bg-white/5 px-3 py-2">
+                <div className="font-black uppercase tracking-widest text-paper/35">Gas</div>
+                <div className="mt-1 font-mono text-paper/80">{receipt.gasUsed}</div>
+              </div>
+            )}
+            {typeof receipt.sync === "boolean" && (
+              <div className="rounded-xl bg-white/5 px-3 py-2">
+                <div className="font-black uppercase tracking-widest text-paper/35">Receipt</div>
+                <div className="mt-1 font-mono text-paper/80">{receipt.sync ? "sync" : "async"}</div>
+              </div>
+            )}
+          </div>
+          <Link
+            href={explorerTx(EXPLORER_URL, receipt.hash)}
+            target="_blank"
+            className="mt-3 block truncate rounded-xl bg-black/25 px-3 py-2 font-mono text-xs text-sky"
+          >
+            {receipt.hash}
+          </Link>
+        </>
       )}
     </div>
   );

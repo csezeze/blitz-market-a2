@@ -74,6 +74,10 @@ export function BuyPanel({ product }: { product: Product }) {
         coinId: product.coinId,
         price: product.price,
         hash: data.hash,
+        status: data.status,
+        gasUsed: data.gasUsed,
+        blockNumber: data.blockNumber,
+        sync: data.sync,
       });
       setMessage(t("purchased"));
     } catch (error) {

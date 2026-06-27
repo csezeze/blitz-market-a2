@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAddress } from "viem";
 import { COIN_ABI, COIN_ADDRESS, isCoinDeployed } from "@/lib/contract";
+import { normalizeRelayReceipt } from "@/lib/receipt";
 import { relay } from "@/lib/relayer";
 
 export const runtime = "nodejs";
@@ -20,14 +21,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "contract_not_deployed" }, { status: 503 });
     }
 
-    const hash = await relay(COIN_ADDRESS as `0x${string}`, COIN_ABI, "buy", [
+    const receipt = normalizeRelayReceipt(await relay(COIN_ADDRESS as `0x${string}`, COIN_ABI, "buy", [
       BigInt(productId),
       address,
       BigInt(coinId),
       BigInt(price),
-    ]);
+    ]));
 
-    return NextResponse.json({ ok: true, hash });
+    return NextResponse.json({ ok: true, ...receipt });
   } catch (error) {
     return NextResponse.json({ error: (error as Error).message || "buy_failed" }, { status: 500 });
   }

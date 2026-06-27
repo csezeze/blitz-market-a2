@@ -1,14 +1,23 @@
 import { defineChain } from "viem";
 import { blitzcoin } from "./shared";
 
+type SharedBlitzCoin = typeof blitzcoin & {
+  explorer?: string;
+  explorerUrl?: string;
+};
+
+const shared = blitzcoin as SharedBlitzCoin;
+
 export const MONAD_RPC_URL =
   process.env.MONAD_RPC_URL ||
   process.env.NEXT_PUBLIC_MONAD_RPC_URL ||
-  blitzcoin.rpcUrl ||
+  shared.rpcUrl ||
   "https://testnet-rpc.monad.xyz";
 
 export const EXPLORER_URL =
-  blitzcoin.explorerUrl || "https://testnet.monadexplorer.com";
+  shared.explorerUrl ||
+  shared.explorer ||
+  "https://testnet.monadexplorer.com";
 
 export const monadTestnet = defineChain({
   id: 10143,

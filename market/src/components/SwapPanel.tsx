@@ -8,6 +8,7 @@ import { explorerTx, shortAddress } from "@/lib/format";
 import { EXPLORER_URL } from "@/lib/chain";
 import { useLocale } from "@/lib/i18n";
 import { BalanceChips } from "./BalanceChips";
+import { ReceiptCard, type Receipt } from "./ReceiptCard";
 
 type BalanceResponse = {
   deployed: boolean;
@@ -24,7 +25,7 @@ export function SwapPanel() {
   const [deployed, setDeployed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const [hash, setHash] = useState("");
+  const [receipt, setReceipt] = useState<Receipt | null>(null);
 
   const fromCoin = coinById(fromId);
   const toCoin = coinById(toId);
@@ -50,7 +51,7 @@ export function SwapPanel() {
     if (!canSwap) return;
     setBusy(true);
     setMessage("");
-    setHash("");
+    setReceipt(null);
     try {
       const res = await fetch("/api/swap", {
         method: "POST",
@@ -59,7 +60,17 @@ export function SwapPanel() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "swap_failed");
-      setHash(data.hash);
+      setReceipt({
+        productId: 0,
+        user: address,
+        coinId: toId,
+        price: amount,
+        hash: data.hash,
+        status: data.status,
+        gasUsed: data.gasUsed,
+        blockNumber: data.blockNumber,
+        sync: data.sync,
+      });
       setMessage(t("swapped", { amount, from: fromCoin.code, to: toCoin.code }));
       await refresh();
     } catch (error) {
@@ -127,10 +138,13 @@ export function SwapPanel() {
       </button>
 
       {message && <div className="mt-4 rounded-xl bg-white/5 px-3 py-2 text-sm font-semibold text-paper/70">{message}</div>}
-      {hash && (
-        <a href={explorerTx(EXPLORER_URL, hash)} target="_blank" className="mt-3 block truncate rounded-xl bg-sky/10 px-3 py-2 text-center font-mono text-xs text-sky">
-          {hash}
+      {receipt && (
+        <div className="mt-4">
+          <ReceiptCard receipt={receipt} />
+          <a href={explorerTx(EXPLORER_URL, receipt.hash)} target="_blank" className="mt-3 block truncate rounded-xl bg-sky/10 px-3 py-2 text-center font-mono text-xs text-sky">
+            {receipt.hash}
         </a>
+        </div>
       )}
     </section>
   );
