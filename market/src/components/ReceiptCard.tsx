@@ -4,6 +4,7 @@ import Link from "next/link";
 import { coinById } from "@/lib/coins";
 import { EXPLORER_URL } from "@/lib/chain";
 import { explorerTx, shortAddress } from "@/lib/format";
+import { useLocale } from "@/lib/i18n";
 import { productById } from "@/lib/products";
 
 export type Receipt = {
@@ -16,6 +17,7 @@ export type Receipt = {
 };
 
 export function ReceiptCard({ receipt }: { receipt: Receipt }) {
+  const { t } = useLocale();
   const product = productById(receipt.productId);
   const coin = coinById(receipt.coinId);
 
@@ -23,7 +25,7 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
     <div className="pop-in rounded-2xl border border-white/10 bg-white/[0.04] p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="text-xs font-black uppercase tracking-widest text-lime">Receipt</div>
+          <div className="text-xs font-black uppercase tracking-widest text-lime">{t("receipt")}</div>
           <h3 className="mt-1 text-lg font-black">{product?.name ?? `Product #${receipt.productId}`}</h3>
           <p className="mt-1 font-mono text-xs text-paper/55">{shortAddress(receipt.user)}</p>
         </div>
@@ -34,7 +36,7 @@ export function ReceiptCard({ receipt }: { receipt: Receipt }) {
       </div>
       {receipt.demo ? (
         <div className="mt-3 rounded-xl bg-sun/15 px-3 py-2 text-xs font-bold text-sun">
-          Demo preview. Add the deployed BlitzCoin address for on-chain receipts.
+          {t("demoPreview")}
         </div>
       ) : (
         <Link

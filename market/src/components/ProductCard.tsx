@@ -1,8 +1,11 @@
 import Link from "next/link";
 import type { Product } from "@/lib/products";
+import { useLocale } from "@/lib/i18n";
 import { PriceTag } from "./PriceTag";
 
 export function ProductCard({ product, featured = false }: { product: Product; featured?: boolean }) {
+  const { t } = useLocale();
+
   return (
     <Link
       href={`/product/${product.id}`}
@@ -28,8 +31,10 @@ export function ProductCard({ product, featured = false }: { product: Product; f
         </div>
       </div>
       <div className="flex items-center justify-between gap-3 px-4 py-3">
-        <span className="text-sm font-semibold text-paper/75">{product.stock} left</span>
-        <span className="font-display text-xl text-punch transition group-hover:translate-x-1">BUY</span>
+        <span className="text-sm font-semibold text-paper/75">
+          {product.stock} {t("stockLeft")}
+        </span>
+        <span className="font-display text-xl text-punch transition group-hover:translate-x-1">{t("tapToBuy")}</span>
       </div>
     </Link>
   );

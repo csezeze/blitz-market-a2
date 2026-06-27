@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BuyPanel } from "@/components/BuyPanel";
 import { ConnectBar } from "@/components/ConnectBar";
 import { Header } from "@/components/Header";
+import { BackToCategory, CoinLabel, DropNoteLabel } from "@/components/InlineCopy";
 import { PriceTag } from "@/components/PriceTag";
 import { coinById } from "@/lib/coins";
 import { productById } from "@/lib/products";
@@ -21,7 +22,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <div>
           <div className="mb-4 flex items-center justify-between">
             <Link href={`/c/${product.category.toLowerCase()}`} className="text-sm font-bold text-paper/55 hover:text-paper">
-              Back to {product.category}
+              <BackToCategory category={product.category} />
             </Link>
             <PriceTag price={product.price} coinId={product.coinId} />
           </div>
@@ -41,13 +42,17 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <div className="panel rounded-2xl p-5">
-              <div className="text-xs font-black uppercase tracking-widest text-paper/45">Coin</div>
+              <div className="text-xs font-black uppercase tracking-widest text-paper/45">
+                <CoinLabel />
+              </div>
               <div className="mt-2 text-2xl font-black" style={{ color: coin.accent }}>
                 {coin.name}
               </div>
             </div>
             <div className="panel rounded-2xl p-5 md:col-span-2">
-              <div className="text-xs font-black uppercase tracking-widest text-paper/45">Drop note</div>
+              <div className="text-xs font-black uppercase tracking-widest text-paper/45">
+                <DropNoteLabel />
+              </div>
               <p className="mt-2 text-paper/72">{product.description}</p>
             </div>
           </div>

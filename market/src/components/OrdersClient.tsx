@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getStoredAddress } from "@/lib/identity";
+import { useLocale } from "@/lib/i18n";
 import type { Purchase } from "@/lib/orders";
 import { ReceiptCard } from "./ReceiptCard";
 
@@ -11,6 +12,7 @@ type OrdersResponse = {
 };
 
 export function OrdersClient() {
+  const { t } = useLocale();
   const [address, setAddress] = useState<`0x${string}` | "">("");
   const [orders, setOrders] = useState<Purchase[]>([]);
   const [deployed, setDeployed] = useState(false);
@@ -29,15 +31,15 @@ export function OrdersClient() {
   }, []);
 
   if (!address) {
-    return <div className="panel rounded-2xl p-6 text-paper/65">Connect a BlitzPass address to load receipts.</div>;
+    return <div className="panel rounded-2xl p-6 text-paper/65">{t("ordersConnect")}</div>;
   }
 
   if (!deployed) {
-    return <div className="panel rounded-2xl p-6 text-paper/65">BlitzCoin address is pending. Receipts appear after A1 deploys the shared contract.</div>;
+    return <div className="panel rounded-2xl p-6 text-paper/65">{t("ordersPending")}</div>;
   }
 
   if (orders.length === 0) {
-    return <div className="panel rounded-2xl p-6 text-paper/65">No on-chain purchases for this address yet.</div>;
+    return <div className="panel rounded-2xl p-6 text-paper/65">{t("ordersEmpty")}</div>;
   }
 
   return (

@@ -6,6 +6,7 @@ import { isAddress } from "viem";
 import { EMPTY_BALANCES, type BalanceMap } from "@/lib/balances";
 import { shortAddress } from "@/lib/format";
 import { getStoredAddress, storeAddress } from "@/lib/identity";
+import { useLocale } from "@/lib/i18n";
 import { BalanceChips } from "./BalanceChips";
 
 type BalanceResponse = {
@@ -14,6 +15,7 @@ type BalanceResponse = {
 };
 
 export function ConnectBar() {
+  const { t } = useLocale();
   const [address, setAddress] = useState<`0x${string}` | "">("");
   const [draft, setDraft] = useState("");
   const [balances, setBalances] = useState<BalanceMap>(EMPTY_BALANCES);
@@ -47,19 +49,19 @@ export function ConnectBar() {
   }, [address]);
 
   const status = useMemo(() => {
-    if (!address) return "paste BlitzPass address";
-    if (!deployed) return "contract pending";
-    return "live balances";
-  }, [address, deployed]);
+    if (!address) return t("connectPaste");
+    if (!deployed) return t("connectPending");
+    return t("connectLive");
+  }, [address, deployed, t]);
 
   const save = () => {
     if (!isAddress(draft)) {
-      setNote("Enter a valid 0x address.");
+      setNote(t("validAddress"));
       return;
     }
     const next = storeAddress(draft);
     setAddress(next);
-    setNote("Address connected.");
+    setNote(t("addressConnected"));
   };
 
   return (
@@ -69,7 +71,7 @@ export function ConnectBar() {
           <span className="h-2.5 w-2.5 rounded-full bg-lime" />
           <span className="text-xs font-bold uppercase tracking-widest text-paper/55">{status}</span>
         </div>
-        <div className="truncate font-mono text-sm font-bold">{address ? shortAddress(address) : "No active wallet"}</div>
+        <div className="truncate font-mono text-sm font-bold">{address ? shortAddress(address) : t("noWallet")}</div>
       </div>
 
       <div className="min-w-0 flex-1 lg:px-5">
@@ -80,14 +82,14 @@ export function ConnectBar() {
         <input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          placeholder="0x address from BlitzPass"
+          placeholder={t("addressPlaceholder")}
           className="focus-ring min-w-0 rounded-xl border border-white/10 bg-black/25 px-3 py-2 font-mono text-xs text-paper outline-none sm:w-72"
         />
         <button onClick={save} className="focus-ring rounded-xl bg-paper px-4 py-2 text-sm font-black text-ink">
-          Connect
+          {t("connect")}
         </button>
         <Link href="/wallet" className="rounded-xl border border-white/15 px-4 py-2 text-center text-sm font-bold text-paper/80">
-          Wallet
+          {t("navWallet")}
         </Link>
       </div>
 

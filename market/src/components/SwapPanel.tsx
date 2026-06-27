@@ -6,6 +6,7 @@ import { EMPTY_BALANCES, type BalanceMap } from "@/lib/balances";
 import { getStoredAddress } from "@/lib/identity";
 import { explorerTx, shortAddress } from "@/lib/format";
 import { EXPLORER_URL } from "@/lib/chain";
+import { useLocale } from "@/lib/i18n";
 import { BalanceChips } from "./BalanceChips";
 
 type BalanceResponse = {
@@ -14,6 +15,7 @@ type BalanceResponse = {
 };
 
 export function SwapPanel() {
+  const { t } = useLocale();
   const [address, setAddress] = useState<`0x${string}` | "">("");
   const [fromId, setFromId] = useState(0);
   const [toId, setToId] = useState(2);
@@ -58,7 +60,7 @@ export function SwapPanel() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "swap_failed");
       setHash(data.hash);
-      setMessage(`Swapped ${amount} ${fromCoin.code} into ${toCoin.code}.`);
+      setMessage(t("swapped", { amount, from: fromCoin.code, to: toCoin.code }));
       await refresh();
     } catch (error) {
       setMessage((error as Error).message);
@@ -71,11 +73,11 @@ export function SwapPanel() {
     <section className="panel rounded-2xl p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="text-xs font-black uppercase tracking-widest text-paper/45">Active wallet</div>
+          <div className="text-xs font-black uppercase tracking-widest text-paper/45">{t("activeWallet")}</div>
           <div className="mt-1 font-mono text-sm font-bold">{shortAddress(address)}</div>
         </div>
         <div className="rounded-full bg-white/5 px-3 py-1 text-xs font-black uppercase tracking-widest text-paper/50">
-          1:1 swap
+          {t("oneToOneSwap")}
         </div>
       </div>
 
@@ -85,7 +87,7 @@ export function SwapPanel() {
 
       <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_1fr_120px]">
         <label className="grid gap-2 text-xs font-bold uppercase tracking-widest text-paper/45">
-          From
+          {t("from")}
           <select value={fromId} onChange={(event) => setFromId(Number(event.target.value))} className="rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm font-bold text-paper">
             {COINS.map((coin) => (
               <option key={coin.id} value={coin.id}>
@@ -95,7 +97,7 @@ export function SwapPanel() {
           </select>
         </label>
         <label className="grid gap-2 text-xs font-bold uppercase tracking-widest text-paper/45">
-          To
+          {t("to")}
           <select value={toId} onChange={(event) => setToId(Number(event.target.value))} className="rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm font-bold text-paper">
             {COINS.map((coin) => (
               <option key={coin.id} value={coin.id}>
@@ -105,7 +107,7 @@ export function SwapPanel() {
           </select>
         </label>
         <label className="grid gap-2 text-xs font-bold uppercase tracking-widest text-paper/45">
-          Amount
+          {t("amount")}
           <input
             value={amount}
             min={1}
@@ -121,7 +123,7 @@ export function SwapPanel() {
         disabled={!canSwap || busy}
         className="mt-5 w-full rounded-2xl bg-paper px-5 py-4 font-black text-ink transition active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-paper/45"
       >
-        {busy ? "Processing" : canSwap ? `Swap ${fromCoin.code} to ${toCoin.code}` : "Swap unavailable"}
+        {busy ? t("processing") : canSwap ? t("swapAction", { from: fromCoin.code, to: toCoin.code }) : t("swapUnavailable")}
       </button>
 
       {message && <div className="mt-4 rounded-xl bg-white/5 px-3 py-2 text-sm font-semibold text-paper/70">{message}</div>}

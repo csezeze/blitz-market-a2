@@ -1,10 +1,13 @@
 import { PRODUCTS } from "@/lib/products";
 import { coinById } from "@/lib/coins";
+import { useLocale } from "@/lib/i18n";
 
 export function ActivityStrip() {
+  const { locale } = useLocale();
   const items = PRODUCTS.slice(0, 6).map((product, index) => {
     const coin = coinById(product.coinId);
-    return `${index + 1} sold - ${product.name} - ${product.price} ${coin.code}`;
+    const action = locale === "tr" ? "satıldı" : "sold";
+    return `${index + 1} ${action} - ${product.name} - ${product.price} ${coin.code}`;
   });
   const doubled = [...items, ...items];
 
